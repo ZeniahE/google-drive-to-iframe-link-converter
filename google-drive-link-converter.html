@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Drive Link Converter</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 2rem;
+        max-width: 800px;
+        margin: auto;
+        align-items: center;
+        background-color: antiquewhite;
+      }
+      input,
+      textarea,
+      button {
+        width: 100%;
+        margin-top: 1rem;
+        font-size: 1rem;
+      }
+      button {
+        padding: 0.75rem;
+        width: 805px;
+        background-color: #00583e;
+        color: antiquewhite;
+      }
+      textarea {
+        height: 120px;
+        background-color: #00583e;
+        color: antiquewhite;
+      }
+      .output {
+        margin-top: 1rem;
+        white-space: pre-wrap;
+        background-color: #00583e;
+        color: antiquewhite;
+        padding: 1rem;
+        border-radius: 6px;
+        position: relative;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.9rem;
+        background-color: antiquewhite;
+        color: #00583e;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        height: 2rem;
+        width: 6rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Google Drive Link → Iframe Preview Converter</h2>
+    <label for="inputLinks"
+      >Paste your Google Drive share links (one per line):</label
+    >
+    <textarea id="inputLinks"></textarea>
+    <button onclick="convertLinks()">Convert</button>
+
+    <div class="output" id="outputWrapper" style="display: none">
+      <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+      <div id="outputLinks"></div>
+    </div>
+
+    <script>
+      function convertLinks() {
+        const input = document.getElementById("inputLinks").value.trim();
+        const lines = input.split("\n");
+        const converted = lines.map((link) => {
+          const match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
+          if (match && match[1]) {
+            return `"https://drive.google.com/file/d/${match[1]}/preview",`;
+          } else {
+            return `❌ Invalid link: ${link}`;
+          }
+        });
+        const output = converted.join("\n");
+        document.getElementById("outputLinks").innerText = output;
+        document.getElementById("outputWrapper").style.display = "block";
+      }
+
+      function copyToClipboard() {
+        const text = document.getElementById("outputLinks").innerText;
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            alert("Copied to clipboard!");
+          })
+          .catch((err) => {
+            alert("Failed to copy: " + err);
+          });
+      }
+    </script>
+  </body>
+</html>
